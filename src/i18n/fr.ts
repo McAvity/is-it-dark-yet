@@ -4,7 +4,7 @@ import type { Messages } from "../i18n.ts";
 const NB = " ";
 
 export const fr: Messages = {
-  appTitle: "Soleil et Lune",
+  appTitle: "Is it dark yet?",
   decimal: ",",
   percent: (n) => `${n}${NB}%`,
   units: { d: "j", h: "h", min: "min", s: "s" },

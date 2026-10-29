@@ -37,10 +37,8 @@ test("language list names each language in itself", () => {
     { code: "pl", name: "Polski" }, { code: "en", name: "English" },
     { code: "fr", name: "Français" }, { code: "de", name: "Deutsch" },
   ]);
-  expect(messages("pl").appTitle).toBe("Słońce i Księżyc");
-  expect(messages("en").appTitle).toBe("Sun & Moon");
-  expect(messages("fr").appTitle).toBe("Soleil et Lune");
-  expect(messages("de").appTitle).toBe("Sonne und Mond");
+  // The name is not translated.
+  for (const lang of ["pl", "en", "fr", "de"] as const) expect(messages(lang).appTitle).toBe("Is it dark yet?");
 });
 
 test("detectLang picks the first supported primary subtag", () => {

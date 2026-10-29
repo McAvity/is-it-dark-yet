@@ -3,7 +3,7 @@ import type { Messages } from "../i18n.ts";
 const NB = " "; // no-break space, as in "53 %"
 
 export const de: Messages = {
-  appTitle: "Sonne und Mond",
+  appTitle: "Is it dark yet?",
   decimal: ",",
   percent: (n) => `${n}${NB}%`,
   units: { d: "T.", h: "Std.", min: "Min.", s: "Sek." },

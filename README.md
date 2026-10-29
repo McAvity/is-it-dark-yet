@@ -1,3 +1,5 @@
+<img src="src/icon.svg" width="72" height="72" alt="">
+
 # Is it dark yet?
 
 A small web app that answers when the sun and the moon rise and set, how long the twilight lasts and where in the sky they are, for any place and any moment.

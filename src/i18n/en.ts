@@ -1,7 +1,7 @@
 import type { Messages } from "../i18n.ts";
 
 export const en: Messages = {
-  appTitle: "Sun & Moon",
+  appTitle: "Is it dark yet?",
   decimal: ".",
   percent: (n) => `${n}%`,
   units: { d: "d", h: "h", min: "min", s: "s" },

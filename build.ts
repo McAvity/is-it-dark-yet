@@ -19,6 +19,8 @@ if (!result.success) {
 await Bun.write("dist/index.html", Bun.file("src/index.html"));
 await Bun.write("dist/styles.css", Bun.file("src/styles.css"));
 await cp("src/fonts", "dist/fonts", { recursive: true });
+await cp("src/icon.svg", "dist/icon.svg");
+await cp("src/apple-touch-icon.png", "dist/apple-touch-icon.png");
 // Full license texts of this app and of Astronomy Engine (taken from the vendored file's header).
 const vendor = await Bun.file("src/vendor/astronomy.ts").text();
 const engine = vendor.slice(vendor.indexOf("MIT License"), vendor.indexOf("*/")).replace(/^ {4}/gm, "").trim();
@@ -27,4 +29,4 @@ await Bun.write(
   "dist/licenses.txt",
   `is-it-dark-yet\n\n${(await Bun.file("LICENSE").text()).trim()}\n\n----\n\nAstronomy Engine (https://github.com/cosinekitty/astronomy)\n\n${engine}\n\n----\n\nArchivo typeface: SIL Open Font License 1.1, see fonts/OFL.txt\n`,
 );
-console.log("built:", result.outputs.map((o) => o.path.replace(process.cwd() + "/", "")).join(", "), "+ dist/index.html, dist/styles.css, dist/fonts/, dist/licenses.txt");
+console.log("built:", result.outputs.map((o) => o.path.replace(process.cwd() + "/", "")).join(", "), "+ dist/index.html, dist/styles.css, dist/fonts/, dist/licenses.txt, icons");
