@@ -1,0 +1,18 @@
+{
+  "name": "is-it-dark-yet",
+  "version": "1.0.0",
+  "description": "When the sun and the moon rise and set, how long the twilight lasts, for any place and moment.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "TZ=America/New_York bun test",
+    "typecheck": "tsc --noEmit -p .",
+    "build": "tsc --noEmit -p . && bun run build.ts",
+    "serve": "bun run build && bun scripts/serve-local.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}

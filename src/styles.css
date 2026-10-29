@@ -1,0 +1,163 @@
+/* Main screen. */
+/* Archivo (SIL Open Font License, see fonts/OFL.txt), served with the app: no request to a font CDN. */
+@font-face {
+  font-family: Archivo; font-style: normal; font-weight: 400 800; font-stretch: 75% 125%; font-display: swap;
+  src: url("./fonts/archivo-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: Archivo; font-style: normal; font-weight: 400 800; font-stretch: 75% 125%; font-display: swap;
+  src: url("./fonts/archivo-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root {
+  color-scheme: dark; --bar-h: 168px;
+  /* Palette; the SVG drawings use the same values from src/view/colors.ts, keep both in step. */
+  --bg: #101B33; --panel: #17264A; --line: #22325A; --border: #2C3E6B;
+  --text: #E9EEF7; --muted: #A3B1CC; --sun: #F2CF4A; --moon: #C9CFDB; --night: #0A1226;
+}
+* { box-sizing: border-box; }
+/* No double-tap zoom (fast taps on − / + zoomed the page on iOS); pinch zoom still works. */
+html, button, select, input, a, label { touch-action: manipulation; }
+button, input, select { font-family: Archivo, sans-serif; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Archivo, sans-serif; font-size: 16px; line-height: 1.45; }
+a { color: var(--sun); }
+a:hover { color: #FFE48A; }
+#app { max-width: 430px; margin: 0 auto; }
+.screen { padding: 20px 16px calc(var(--bar-h) + 24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 28px; }
+.k { color: var(--muted); }
+.v { font-variant-numeric: tabular-nums; }
+.row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: 0; }
+.row > span:last-child { text-align: right; }
+.h2 { margin: 0 0 6px; font-size: 20px; font-weight: 700; font-stretch: 112%; letter-spacing: -0.01em; color: var(--text); }
+.btn { min-width: 48px; height: 48px; border-radius: 24px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-weight: 600; font-size: 16px; padding: 0 16px; cursor: pointer; }
+.btn.icon { padding: 0; width: 48px; display: flex; align-items: center; justify-content: center; flex: none; }
+.btn.big { font-size: 22px; }
+.bar .btn { height: 44px; }
+.bar .btn.big { width: 44px; min-width: 44px; padding: 0; flex: none; }
+/* Sun-filled: primary buttons, the chosen language, the "selected" badge */
+.btn.primary, .loc .pill.primary, .loc .seg-btn[aria-pressed="true"], .loc .badge { background: var(--sun); color: var(--bg); }
+.btn.primary { border-color: var(--sun); }
+.tab:focus-visible, .btn:focus-visible,
+.loc .ico:focus-visible, .loc .pick:focus-visible, .loc .pill:focus-visible, .loc .back:focus-visible, .loc .seg-btn:focus-visible {
+  outline: 2px solid var(--sun); outline-offset: 2px;
+}
+
+/* Location row (top of the bottom bar) */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.place { color: var(--text); text-decoration: none; display: flex; flex-direction: column; justify-content: center; flex: 1; min-height: 44px; min-width: 0; }
+.place:hover { color: var(--text); }
+.place-name { font-size: 18px; font-weight: 800; font-stretch: 118%; letter-spacing: -0.02em; display: flex; align-items: center; gap: 6px; line-height: 1.2; }
+.place-name svg { flex: none; }
+.place-name, .sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub { font-size: 13px; line-height: 1.25; }
+.top .btn.icon { width: 44px; min-width: 44px; }
+
+/* Carousel */
+.view { display: flex; flex-direction: column; gap: 4px; }
+.track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 372px; }
+.slide svg { max-width: 100%; height: auto; }
+.dial-big { font-stretch: 112%; font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; font-size: 14px; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.sw-sun { width: 18px; height: 3px; background: var(--sun); }
+.sw-moon { width: 18px; height: 0; border-top: 2px dashed var(--moon); }
+.sw-dir { width: 0; height: 14px; border-left: 2px dashed rgba(242, 207, 74, 0.7); }
+.tabs { display: flex; justify-content: center; gap: 4px; }
+.tab { height: 44px; border: 0; background: transparent; color: var(--muted); font-weight: 600; font-size: 15px; padding: 0 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.tab .dot { width: 8px; height: 8px; border-radius: 4px; background: currentColor; }
+.tab.on { color: var(--sun); }
+
+/* Time controls */
+.bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; z-index: 10; display: flex; flex-direction: column; gap: 6px; padding: 10px 16px calc(8px + env(safe-area-inset-bottom)); background: var(--night); border-top: 1px solid #3A5089; border-radius: 16px 16px 0 0; box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.45); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.line { display: flex; gap: 8px; }
+.line.center { align-items: center; }
+.line.end { align-items: flex-end; gap: 10px; }
+.field { font-size: 13px; color: var(--muted); }
+.field.grow { flex: 1; min-width: 0; }
+.field.time { width: 124px; flex: none; }
+.field input { display: block; width: 100%; min-width: 0; height: 44px; -webkit-appearance: none; appearance: none; text-align: left; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-weight: 600; font-size: 17px; padding: 0 10px; }
+.field.time input { font-weight: 700; font-size: 20px; }
+/* iOS Safari: native date/time inputs keep their own width, height and centred value unless reset. */
+.field input::-webkit-date-and-time-value { margin: 0; text-align: left; }
+.field input::-webkit-datetime-edit { padding: 0; }
+.field input[type="date"], .field input[type="time"] { display: flex; align-items: center; line-height: 42px; }
+.step { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: 13px; color: var(--muted); }
+.step select { width: 100%; max-width: 140px; height: 44px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-weight: 600; font-size: 15px; padding: 0 8px; }
+
+/* Day events: time, mark in the colour of the light (or the moon), name, azimuth */
+.event { display: grid; grid-template-columns: 50px 10px minmax(0, 1fr) auto; column-gap: 10px; align-items: center; padding: 4px 0; }
+.event .when { font-size: 17px; }
+.event .az { font-weight: 600; }
+.event.past .when, .event.past .what, .event.past .az { opacity: 0.6; }
+.swatch.square { border-radius: 2px; }
+.event .sym { width: 10px; display: flex; justify-content: center; font-size: 20px; line-height: 1; }
+.swatch { width: 10px; height: 10px; border-radius: 5px; flex: none; }
+
+/* Moon */
+.moon { display: flex; gap: 18px; align-items: center; padding: 6px 0 12px; }
+.phase { font-size: 20px; font-weight: 700; font-stretch: 112%; }
+
+/* Sun direction */
+.direction .line { margin-bottom: 8px; }
+.field input.az { width: 88px; }
+.compass { flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; }
+.step.tol { flex: none; align-items: flex-start; }
+.dir-results .row > span:first-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.direction .empty { margin: 8px 0 12px; }
+
+/* Simple message screens */
+.message { padding: 40px 16px; display: flex; flex-direction: column; gap: 16px; min-height: 60vh; justify-content: center; text-align: center; }
+
+/* Location screen. Scoped: some names clash with the main screen. */
+.loc { gap: 26px; padding-top: 16px; }
+.loc-top { display: flex; align-items: center; gap: 8px; }
+.loc-top h1 { margin: 0; font-size: 24px; font-weight: 800; font-stretch: 118%; letter-spacing: -0.02em; }
+.loc .back { width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; background: var(--panel); flex: none; }
+.loc .search { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 14px; border-radius: 26px; border: 1.5px solid var(--border); background: var(--panel); }
+.loc .search:focus-within { border-color: var(--sun); }
+.loc .search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--text); font-weight: 500; font-size: 17px; outline: none; }
+.loc .results { margin-top: -14px; display: flex; flex-direction: column; gap: 8px; }
+.loc .results:empty { display: none; }
+.loc .list { display: flex; flex-direction: column; gap: 8px; }
+.loc .hint { margin: 2px 4px 0; font-size: 13px; }
+.loc .card { display: flex; align-items: center; gap: 8px; padding: 12px; border-radius: 14px; border: 1px solid var(--line); background: var(--panel); }
+.loc .card.flat { background: var(--bg); }
+.loc .card.wrap { flex-wrap: wrap; }
+.loc .card.on { border-color: var(--sun); }
+.loc .card.editing { border-color: var(--border); }
+.loc .gps-ico { flex: 0 0 24px; margin-left: 4px; }
+.loc .pick { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; color: var(--text); font: inherit; padding: 0; cursor: pointer; display: flex; flex-direction: column; }
+.loc .nm { font-weight: 700; font-size: 17px; overflow-wrap: anywhere; }
+.loc .meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.loc .side { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.loc .ltime { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.loc .badge { height: 24px; padding: 0 10px; border-radius: 12px; font-size: 13px; font-weight: 700; line-height: 24px; white-space: nowrap; }
+.loc .ico { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 22px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.loc .ico.tight { margin-left: -8px; }
+.loc .sub-row { display: flex; gap: 8px; align-items: flex-end; margin-top: 10px; }
+.loc .card .sub-row { flex: 1 1 100%; margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.loc .grow { flex: 1; min-width: 0; }
+.loc .full { flex: 1 1 100%; }
+.loc .gap { margin-top: 10px; }
+.loc .lab { display: block; font-size: 13px; color: var(--muted); }
+.loc .inp { display: block; width: 100%; height: 44px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-weight: 600; font-size: 16px; padding: 0 10px; }
+.loc .card .inp { background: var(--bg); }
+.loc .tz-note { margin: 4px 2px 0; }
+.loc .err { margin: 8px 2px 0; color: #FF9B8A; font-size: 14px; }
+.loc .pill { height: 48px; border-radius: 24px; font-weight: 700; font-size: 16px; padding: 0 16px; cursor: pointer; }
+.loc .pill.primary { border: 0; }
+.loc .pill.ghost { border: 1px solid var(--border); background: transparent; color: var(--text); }
+.loc .pill.small { height: 44px; font-size: 15px; }
+.loc section > .pill.ghost { margin-top: 8px; font-weight: 600; }
+.loc .pill:disabled { opacity: 0.6; cursor: default; }
+.loc .manual { padding: 16px; border-radius: 14px; border: 1px solid var(--line); }
+.loc .lang .h2 { font-size: 15px; font-weight: 600; font-stretch: 100%; color: var(--muted); margin-bottom: 8px; }
+.loc .seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 3px; gap: 3px; border-radius: 24px; border: 1px solid var(--border); background: var(--panel); }
+.loc .seg-btn { min-height: 44px; border: 0; border-radius: 21px; background: transparent; color: var(--text); font-weight: 600; font-size: 15px; padding: 0 4px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.loc .seg-btn[aria-pressed="true"] { font-weight: 700; }
+.loc .about { display: flex; justify-content: center; gap: 20px; font-size: 13px; padding: 4px 0 8px; }
