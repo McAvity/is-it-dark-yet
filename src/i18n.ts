@@ -133,9 +133,8 @@ export interface Messages {
     zone: string;
     use: string;
     saveFav: string;
-    privacy: string; // footer links: privacy notice, license texts, source code
+    privacy: string; // footer links: privacy notice, license texts (the source link is "GitHub" in every language)
     licenses: string;
-    source: string;
   };
   myLocation: string; // default name of a GPS place
   unnamed: string; // default name of any other place

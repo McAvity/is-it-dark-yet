@@ -128,7 +128,6 @@ export const pl: Messages = {
     saveFav: "Zapisz do ulubionych",
     privacy: "Prywatność",
     licenses: "Licencje",
-    source: "Kod źródłowy",
   },
   myLocation: "Moja lokalizacja",
   unnamed: "Bez nazwy",

@@ -7,6 +7,7 @@ import { formatTime } from "../format.ts";
 import type { Lang } from "../i18n.ts";
 import { LIGHT_COLORS } from "./colors.ts";
 import { renderMain } from "./main-view.ts";
+import { version } from "../../package.json";
 import { LISBON, NORTH_POLE, POZNAN, SYDNEY, TROMSO, mainState } from "../test-fixtures.ts";
 
 
@@ -20,6 +21,13 @@ describe("renderMain, Poznań 2026-11-01 15:25", () => {
     ]) {
       expect(html).toContain(s);
     }
+  });
+
+  test("ends with the app's version and the GitHub, privacy and license links", () => {
+    const footer = html.slice(html.indexOf('<footer class="app-info">'), html.indexOf("</footer>"));
+    expect(footer).toContain(`v${version}`);
+    expect(footer).toContain('<a href="https://github.com/McAvity/is-it-dark-yet">GitHub</a>');
+    expect(footer).toContain('<a href="./licenses.txt">Licencje</a>');
   });
 
   test("sections appear in order", () => {

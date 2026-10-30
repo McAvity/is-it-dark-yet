@@ -128,7 +128,6 @@ export const en: Messages = {
     saveFav: "Save to favorites",
     privacy: "Privacy",
     licenses: "Licenses",
-    source: "Source code",
   },
   myLocation: "My location",
   unnamed: "Unnamed",

@@ -11,6 +11,7 @@ import { LOCATION_HASH, TOLERANCES, type AppState, type Direction } from "../sta
 import { STEPS, zonedParts, type Step } from "../time.ts";
 import { COLORS, LIGHT_COLORS } from "./colors.ts";
 import { renderDial } from "./dial.ts";
+import { appFooter } from "./about.ts";
 import { gpsIcon } from "./icons.ts";
 import { escapeHtml } from "./escape.ts";
 import { renderHorizon } from "./horizon.ts";
@@ -182,6 +183,7 @@ ${quarters}
 ${seasonRows.map(([name, d]) => row(name, formatDateTime(d, tz))).join("")}
 </section>
 ${directionSection(t, place, state.direction, lang)}
+${appFooter(lang)}
 </div>
 </div>
 ${bottomBar(place, t, state.step, lang)}

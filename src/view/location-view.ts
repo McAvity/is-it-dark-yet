@@ -5,6 +5,7 @@ import { LANGS, messages, placeName, type ErrorCode, type Lang, type Messages } 
 import { MIN_QUERY, samePlace, timeZoneList } from "../places.ts";
 import { COLORS } from "./colors.ts";
 import { escapeHtml } from "./escape.ts";
+import { appFooter } from "./about.ts";
 import { gpsIcon } from "./icons.ts";
 import { options } from "./options.ts";
 
@@ -159,14 +160,6 @@ function manualSection(c: Ctx): string {
 </section>`;
 }
 
-const REPO = "https://github.com/McAvity/is-it-dark-yet";
-
-// Privacy notice (in the README), the license texts shipped with the build, and the source code.
-function about(c: Ctx): string {
-  const { l } = c;
-  return `<footer class="about"><a href="${REPO}#privacy">${l.privacy}</a><a href="./licenses.txt">${l.licenses}</a><a href="${REPO}">${l.source}</a></footer>`;
-}
-
 export function renderLocation(vm: LocationViewModel): string {
   const { lang } = vm;
   const m = messages(lang);
@@ -179,6 +172,6 @@ ${results(c)}
 ${gpsSection(c)}
 ${favoritesSection(c)}
 ${manualSection(c)}
-${about(c)}
+${appFooter(lang)}
 </div>`;
 }

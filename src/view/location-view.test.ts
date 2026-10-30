@@ -43,7 +43,8 @@ describe("renderLocation", () => {
 
   test("footer links to the privacy notice, the license texts and the source", () => {
     const html = renderLocation(vm({ lang: "en" }));
-    expect(html).toContain('<footer class="about"><a href="https://github.com/McAvity/is-it-dark-yet#privacy">Privacy</a><a href="./licenses.txt">Licenses</a><a href="https://github.com/McAvity/is-it-dark-yet">Source code</a></footer>');
+    expect(html).toContain('<div class="links"><a href="https://github.com/McAvity/is-it-dark-yet">GitHub</a><a href="https://github.com/McAvity/is-it-dark-yet#privacy">Privacy</a><a href="./licenses.txt">Licenses</a></div>');
+    expect(html).toContain('<footer class="app-info">');
   });
 
   test("results credit the search service and its data (CC BY 4.0); no results, no credit", () => {

@@ -131,7 +131,6 @@ export const fr: Messages = {
     saveFav: "Ajouter aux favoris",
     privacy: "Confidentialité",
     licenses: "Licences",
-    source: "Code source",
   },
   myLocation: "Ma position",
   unnamed: "Sans nom",
