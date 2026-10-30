@@ -16,7 +16,14 @@ if (!result.success) {
   for (const log of result.logs) console.error(log);
   process.exit(1);
 }
-await Bun.write("dist/index.html", Bun.file("src/index.html"));
+// A content hash in the CSS and JS links: after a release the browser fetches both anew, never one new
+// file with the other from its cache.
+const version = async (path: string) => Bun.hash(await Bun.file(path).arrayBuffer()).toString(36).slice(0, 8);
+const html = (await Bun.file("src/index.html").text())
+  .replace('href="./styles.css"', `href="./styles.css?v=${await version("src/styles.css")}"`)
+  .replace('src="./main.js"', `src="./main.js?v=${await version("dist/main.js")}"`);
+if (!html.includes("styles.css?v=") || !html.includes("main.js?v=")) throw new Error("CSS or JS link not found in index.html");
+await Bun.write("dist/index.html", html);
 await Bun.write("dist/styles.css", Bun.file("src/styles.css"));
 await cp("src/fonts", "dist/fonts", { recursive: true });
 await cp("src/icon.svg", "dist/icon.svg");
