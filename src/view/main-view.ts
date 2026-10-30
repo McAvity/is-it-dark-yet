@@ -159,9 +159,11 @@ export function renderMain(state: AppState & { place: Place }): string {
     [south ? main.summerSolstice : main.winterSolstice, s.decemberSolstice],
   ] as const;
 
-  return `<div class="screen">
+  return `<div class="screen day">
 ${carousel(renderDial(t, tz, sun, moon, lang), renderHorizon(t, place, sun, moon, state.direction.azimuth, lang), state.slide, lang)}
-${eventsSection(dayEvents(t, place, sun, moon), t, tz, lang)}
+<div class="info">
+<div class="col">${eventsSection(dayEvents(t, place, sun, moon), t, tz, lang)}</div>
+<div class="col">
 <section><h2 class="h2">${main.whereNow}</h2>
 ${where(main.sun, sun.position.altitude, sun.position.azimuth)}
 ${where(main.moon, moon.position.altitude, moon.position.azimuth)}
@@ -180,6 +182,8 @@ ${quarters}
 ${seasonRows.map(([name, d]) => row(name, formatDateTime(d, tz))).join("")}
 </section>
 ${directionSection(t, place, state.direction, lang)}
+</div>
+</div>
 ${bottomBar(place, t, state.step, lang)}
 </div>`;
 }
