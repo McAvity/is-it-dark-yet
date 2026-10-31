@@ -1,9 +1,13 @@
 import { expect, test } from "bun:test";
 import { LANGS, detectLang, messages, placeName, type Lang } from "./i18n.ts";
 
-// Same nested keys and value kinds as Polish; no empty strings anywhere.
+// Same nested keys and value kinds as Polish; no empty strings anywhere. Constellation names are partial
+// by design (English keeps the Latin names), so only their values are checked.
 function shape(v: unknown, path: string, out: Map<string, string>): void {
-  if (typeof v === "string") {
+  if (path === ".sky.constellations") {
+    out.set(path, "object");
+    for (const x of Object.values(v as object)) expect(String(x).trim(), path).not.toBe("");
+  } else if (typeof v === "string") {
     out.set(path, "string");
     expect(v.trim(), path).not.toBe("");
   } else if (typeof v === "function") out.set(path, "function");

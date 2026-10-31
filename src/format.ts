@@ -127,3 +127,10 @@ export function lightLabel(state: LightState, sunRising: boolean, lang: Lang): s
   if (state === "night") return l.night;
   return (sunRising ? l.dawn : l.dusk)[state];
 }
+
+const LOCALES: Record<Lang, string> = { pl: "pl-PL", en: "en-GB", fr: "fr-FR", de: "de-DE" };
+
+// Whole kilometres with the language's digit grouping: "369 447 km", "369,447 km".
+export function formatKm(km: number, lang: Lang): string {
+  return `${new Intl.NumberFormat(LOCALES[lang], { maximumFractionDigits: 0 }).format(km)} km`;
+}

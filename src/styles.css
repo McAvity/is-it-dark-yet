@@ -15,6 +15,8 @@
   /* Palette; the SVG drawings use the same values from src/view/colors.ts, keep both in step. */
   --bg: #101B33; --panel: #17264A; --line: #22325A; --border: #2C3E6B;
   --text: #E9EEF7; --muted: #A3B1CC; --sun: #F2CF4A; --moon: #C9CFDB; --night: #0A1226;
+  /* Sky section: golden and blue hour, the sky while the sun is up */
+  --golden: #F2A93B; --blue-hour: #5B7BE0; --day-sky: #6FA3E6;
 }
 * { box-sizing: border-box; }
 /* No double-tap zoom (fast taps on − / + zoomed the page on iOS); pinch zoom still works. */
@@ -110,6 +112,56 @@ a:hover { color: #FFE48A; }
 .dir-results .row > span:first-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .direction .empty { margin: 8px 0 12px; }
 
+/* Sky section below the main screen. Its groups follow the section's own width (container query):
+   one column on a phone, two from 560 px, three from 900 px with the coming events across two. */
+.sky { container-type: inline-size; display: flex; flex-direction: column; gap: 20px; }
+.sky-title { margin: 0; padding-top: 20px; border-top: 1px solid var(--border); font-size: 24px; font-weight: 800; font-stretch: 118%; letter-spacing: -0.02em; }
+.sky-grid { display: flex; flex-direction: column; gap: 28px; }
+.sky .grp { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.sky .h2 { margin: 0; }
+.sky .small { font-size: 14px; }
+.sky .big { font-size: 30px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; line-height: 1.15; }
+.sky .big-note { font-size: 18px; font-weight: 700; }
+.sky .empty { margin: 4px 0; }
+.strip, .nbar { position: relative; height: 26px; border-radius: 13px; overflow: hidden; }
+.strip { background: var(--night); }
+.nbar { background: #1C3466; }
+.strip i, .nbar i { position: absolute; top: 0; bottom: 0; }
+.strip .up { background: var(--day-sky); }
+.strip .blue { background: var(--blue-hour); }
+.strip .golden { background: var(--golden); }
+.nbar .night { background: var(--night); }
+.nbar .moon-up { background: repeating-linear-gradient(135deg, #3A4A72 0 6px, #2A3A62 6px 12px); }
+.nbar .dark { background: var(--night); box-shadow: inset 0 0 0 2px var(--sun); border-radius: 13px; }
+.sky .ticks { position: relative; display: flex; justify-content: space-between; height: 18px; margin-top: 4px; font-size: 12px; color: var(--muted); }
+.sky .ticks .mid { position: absolute; top: 0; transform: translateX(-50%); }
+.photo { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 6px 12px; align-items: center; font-size: 15px; }
+.photo .key { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.photo .key::before { content: ""; width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.photo .key.blue::before { background: var(--blue-hour); }
+.photo .key.golden::before { background: var(--golden); }
+.planet { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.planet:last-child { border-bottom: 0; }
+.planet .dot { justify-self: center; border-radius: 50%; }
+.planet .t { display: flex; flex-direction: column; line-height: 1.25; }
+.planet small, .ev small { color: var(--muted); font-size: 13px; }
+.gauge { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--sun), var(--border)); margin: 16px 9px 6px; }
+.gauge b { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--moon); border: 3px solid var(--bg); }
+.gauge-l { display: flex; justify-content: space-between; font-size: 13px; }
+.ev { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.ev:last-child { border-bottom: 0; }
+.ev .d { font-weight: 700; }
+.ev .w { display: flex; flex-direction: column; line-height: 1.3; }
+@container (min-width: 560px) {
+  .sky-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 40px; align-items: start; }
+}
+@container (min-width: 900px) {
+  .sky-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sky .grp.up { grid-column: span 2; }
+  .sky .ev-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), auto); grid-auto-flow: column; column-gap: 40px; align-content: start; }
+  .sky .ev-list .ev.col-end { border-bottom: 0; }
+}
+
 /* Simple message screens */
 .message { padding: 40px 16px; display: flex; flex-direction: column; gap: 16px; min-height: 60vh; justify-content: center; text-align: center; }
 
@@ -169,7 +221,7 @@ a:hover { color: #FFE48A; }
 
 /* Wider screens: tablets, desktop, phones in landscape (from 700 px wide). Phones in portrait keep the column above. */
 /* The columns of the main screen; on a phone in portrait they leave the layout as it is. */
-.info, .col { display: contents; }
+.day-top, .info, .col { display: contents; }
 @media (min-width: 700px) and (min-height: 600px), (orientation: landscape) and (min-width: 700px) {
   /* --side keeps the content clear of the notch in landscape (viewport-fit=cover). */
   :root { --app-w: 1000px; --bar-h: 112px; --side: max(24px, env(safe-area-inset-left), env(safe-area-inset-right)); }
@@ -204,7 +256,8 @@ a:hover { color: #FFE48A; }
 }
 /* Landscape: the charts stay in place on the left, the rest scrolls on the right. */
 @media (orientation: landscape) and (min-width: 700px) {
-  .screen.day { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 40px; align-items: start; }
+  /* .day-top holds the charts and the columns, so the sticky charts stop where the sky section begins. */
+  .day-top { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: 40px; align-items: start; }
   .view { position: sticky; top: 20px; }
   .info { display: flex; flex-direction: column; align-items: stretch; gap: 28px; }
   .slide svg { width: auto; max-width: 100%; }
@@ -216,7 +269,8 @@ a:hover { color: #FFE48A; }
 }
 /* Phones in landscape: one chart at a time (the carousel stays), as tall as the screen allows; a slimmer bar. */
 @media (orientation: landscape) and (min-width: 700px) and (max-height: 599px) {
-  .screen.day { padding-top: 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; }
+  .screen.day { padding-top: 12px; }
+  .day-top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; }
   .view { top: 12px; }
   .slide { min-height: 0; }
   .slide svg.dial { height: calc(100dvh - var(--bar-h) - env(safe-area-inset-bottom) - 96px); }

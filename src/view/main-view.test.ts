@@ -276,3 +276,41 @@ describe("other languages", () => {
     expect(html).toContain('Sonne geht nicht auf <span class="k">(Höchststand)</span>');
   });
 });
+
+describe("sky section", () => {
+  const html = renderMain(mainState(POZNAN));
+  const sky = html.slice(html.indexOf('<section class="sky"'), html.indexOf("</section>", html.indexOf('<section class="sky"')));
+
+  test("comes after the main screen's sections and before the footer", () => {
+    const at = (s: string) => html.indexOf(s);
+    expect(at("Kiedy Słońce będzie z kierunku…")).toBeLessThan(at('<section class="sky"'));
+    expect(at('<section class="sky"')).toBeLessThan(at('<footer class="app-info">'));
+  });
+
+  test("shows its groups in order", () => {
+    let last = -1;
+    for (const h of ["Niebo", "Światło dziś", "Ta noc", ">Księżyc<", "Nadchodzące", "Dla dociekliwych"]) {
+      const i = sky.indexOf(h);
+      expect(i, h).toBeGreaterThan(last);
+      last = i;
+    }
+  });
+
+  test("planets and constellations in Polish, distances with grouped digits", () => {
+    for (const s of ["Saturn", "Wenus", "Panna", "Superksiężyc", "Waga", "Czas gwiazdowy"]) expect(sky).toContain(s);
+    expect(sky).toMatch(/\d{3}\s\d{3} km/);
+  });
+
+  test("every language renders it without gaps", () => {
+    for (const lang of ["pl", "en", "fr", "de"] as Lang[]) {
+      const page = renderMain(mainState(POZNAN, undefined, undefined, lang));
+      expect(page).not.toContain("undefined");
+      expect(page).not.toContain("NaN");
+    }
+  });
+
+  test("no dark window in a Tromsø summer night, said in words", () => {
+    const page = renderMain(mainState(TROMSO, new Date("2026-06-21T21:00:00Z")));
+    expect(page).toContain("Tej nocy nie będzie całkiem ciemno");
+  });
+});

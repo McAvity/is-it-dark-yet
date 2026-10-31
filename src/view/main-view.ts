@@ -12,6 +12,7 @@ import { STEPS, zonedParts, type Step } from "../time.ts";
 import { COLORS, LIGHT_COLORS } from "./colors.ts";
 import { renderDial } from "./dial.ts";
 import { appFooter } from "./about.ts";
+import { renderSky } from "./sky-view.ts";
 import { gpsIcon } from "./icons.ts";
 import { escapeHtml } from "./escape.ts";
 import { renderHorizon } from "./horizon.ts";
@@ -161,6 +162,7 @@ export function renderMain(state: AppState & { place: Place }): string {
   ] as const;
 
   return `<div class="screen day">
+<div class="day-top">
 ${carousel(renderDial(t, tz, sun, moon, lang), renderHorizon(t, place, sun, moon, state.direction.azimuth, lang), state.slide, lang)}
 <div class="info">
 <div class="col">${eventsSection(dayEvents(t, place, sun, moon), t, tz, lang)}</div>
@@ -183,9 +185,11 @@ ${quarters}
 ${seasonRows.map(([name, d]) => row(name, formatDateTime(d, tz))).join("")}
 </section>
 ${directionSection(t, place, state.direction, lang)}
+</div>
+</div>
+</div>
+${renderSky(t, place, lang)}
 ${appFooter(lang)}
-</div>
-</div>
 ${bottomBar(place, t, state.step, lang)}
 </div>`;
 }

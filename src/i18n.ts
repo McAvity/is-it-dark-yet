@@ -1,5 +1,6 @@
 // UI languages: every user-visible string lives in a Messages object, one per language (src/i18n/*.ts).
 import type { MoonPhaseName, Place, TwilightKind } from "./astro.ts";
+import type { PlanetName } from "./sky.ts";
 import type { Step } from "./time.ts";
 import { de } from "./i18n/de.ts";
 import { en } from "./i18n/en.ts";
@@ -100,6 +101,39 @@ export interface Messages {
     dirNone: (az: number, tol: number) => string;
     azimuth: string;
     tolerance: string;
+  };
+  sky: {
+    heading: string;
+    light: string; // blue and golden hour today
+    blue: string;
+    golden: string;
+    morning: string;
+    evening: string;
+    tonight: string;
+    dark: string; // above the dark window: astronomical night with the Moon down
+    noNight: string; // the sun never gets 18° below the horizon
+    moonAllNight: string; // there is a night, but the Moon is up through all of it
+    noPlanets: string;
+    planets: Record<PlanetName, string>;
+    distanceNow: string;
+    closer: string; // ends of the distance gauge
+    farther: string;
+    apogee: string;
+    perigee: string;
+    upcoming: string;
+    supermoon: string;
+    fullMoon: (time: string, km: string) => string;
+    elongation: (body: "mercury" | "venus", morning: boolean) => string; // best seen in the morning / evening
+    fromSun: (deg: number) => string;
+    lunarEclipse: Record<"penumbral" | "partial" | "total", string>;
+    solarEclipse: Record<"partial" | "annular" | "total", string>;
+    peak: (time: string) => string;
+    obscured: (pct: string) => string; // part of the sun's disc covered
+    curious: string;
+    sunIn: string;
+    moonIn: string;
+    sidereal: string;
+    constellations: Partial<Record<string, string>>; // by the engine's Latin name; missing ones stay Latin
   };
   location: {
     title: string;
