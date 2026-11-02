@@ -169,6 +169,7 @@ export interface Messages {
     saveFav: string;
     privacy: string; // footer links: privacy notice, license texts (the source link is "GitHub" in every language)
     licenses: string;
+    using: (link: string) => string; // footer credit for the astronomy library, link = its name as a link
   };
   myLocation: string; // default name of a GPS place
   unnamed: string; // default name of any other place

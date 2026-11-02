@@ -44,6 +44,7 @@ describe("renderLocation", () => {
   test("footer links to the privacy notice, the license texts and the source", () => {
     const html = renderLocation(vm({ lang: "en" }));
     expect(html).toContain('<div class="links"><a href="https://github.com/McAvity/is-it-dark-yet">GitHub</a><a href="https://github.com/McAvity/is-it-dark-yet#privacy">Privacy</a><a href="./licenses.txt">Licenses</a></div>');
+    expect(html).toContain('Using <a href="https://github.com/cosinekitty/astronomy">Astronomy Engine</a>');
     expect(html).toContain('<footer class="app-info">');
   });
 

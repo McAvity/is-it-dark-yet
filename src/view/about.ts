@@ -11,5 +11,6 @@ export function appFooter(lang: Lang): string {
   return `<footer class="app-info">
 <div class="app-name"><img src="./icon.svg" alt="" width="22" height="22">${m.appTitle} <span class="k">v${version}</span></div>
 <div class="links"><a href="${REPO}">GitHub</a><a href="${REPO}#privacy">${l.privacy}</a><a href="./licenses.txt">${l.licenses}</a></div>
+<div class="k">${l.using('<a href="https://github.com/cosinekitty/astronomy">Astronomy Engine</a>')}</div>
 </footer>`;
 }

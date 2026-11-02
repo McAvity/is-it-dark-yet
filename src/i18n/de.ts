@@ -188,6 +188,7 @@ export const de: Messages = {
     saveFav: "Als Favorit speichern",
     privacy: "Datenschutz",
     licenses: "Lizenzen",
+    using: (link) => `Verwendet ${link}`,
   },
   myLocation: "Mein Standort",
   unnamed: "Unbenannt",

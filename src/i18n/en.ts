@@ -161,6 +161,7 @@ export const en: Messages = {
     saveFav: "Save to favorites",
     privacy: "Privacy",
     licenses: "Licenses",
+    using: (link) => `Using ${link}`,
   },
   myLocation: "My location",
   unnamed: "Unnamed",

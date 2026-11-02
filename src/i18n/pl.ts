@@ -185,6 +185,7 @@ export const pl: Messages = {
     saveFav: "Zapisz do ulubionych",
     privacy: "Prywatność",
     licenses: "Licencje",
+    using: (link) => `Korzysta z ${link}`,
   },
   myLocation: "Moja lokalizacja",
   unnamed: "Bez nazwy",
