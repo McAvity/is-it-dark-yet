@@ -101,15 +101,12 @@ export function skyPath(body: Body, t: Date, place: Place, center = 180): string
   return d;
 }
 
-export function moonDiscPath(illumination: number, phaseAngle: number, cx: number, cy: number, r: number, southern: boolean): string {
-  const waxing = phaseAngle < 180;
-  const gibbous = illumination > 0.5;
+// The lit part of the moon disc, lit side on the right; rotate it with moonDiscRotation.
+export function moonDiscPath(illumination: number, cx: number, cy: number, r: number): string {
   const rx = r1(r * Math.abs(2 * illumination - 1));
-  let s1 = waxing ? 1 : 0;
-  let s2 = waxing ? (gibbous ? 1 : 0) : gibbous ? 0 : 1;
-  if (southern) {
-    s1 = 1 - s1;
-    s2 = 1 - s2;
-  }
-  return `M${fmt(cx)},${fmt(cy - r)} A${r},${r} 0 0 ${s1} ${fmt(cx)},${fmt(cy + r)} A${rx},${r} 0 0 ${s2} ${fmt(cx)},${fmt(cy - r)} Z`;
+  const s2 = illumination > 0.5 ? 1 : 0;
+  return `M${fmt(cx)},${fmt(cy - r)} A${r},${r} 0 0 1 ${fmt(cx)},${fmt(cy + r)} A${rx},${r} 0 0 ${s2} ${fmt(cx)},${fmt(cy - r)} Z`;
 }
+
+// SVG rotation (degrees clockwise) that turns moonDiscPath's lit side (on the right, 270°) to litAngle.
+export const moonDiscRotation = (litAngle: number): number => r1(norm360(270 - litAngle));

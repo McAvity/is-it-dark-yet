@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { moonInfo, sunInfo, type MoonInfo, type Place, type SunInfo } from "./astro.ts";
 import { Body } from "./vendor/astronomy.ts";
-import { dialArc, dialPoint, horizonCenter, horizonX, horizonY, lightSegments, moonDiscPath, moonSegments, skyPath } from "./geometry.ts";
+import { dialArc, dialPoint, horizonCenter, horizonX, horizonY, lightSegments, moonDiscPath, moonDiscRotation, moonSegments, skyPath } from "./geometry.ts";
 import { POZNAN, SYDNEY, TROMSO, place } from "./test-fixtures.ts";
 
 const T = new Date("2026-11-01T14:25:00Z");
@@ -98,14 +98,15 @@ describe("horizonCenter", () => {
 });
 
 describe("moonDiscPath", () => {
-  test("waning gibbous", () => {
-    expect(moonDiscPath(0.53, 266.7, 60, 60, 54, false)).toBe("M60,6 A54,54 0 0 0 60,114 A3.2,54 0 0 0 60,6 Z");
-    expect(moonDiscPath(0.53, 266.7, 60, 60, 54, true)).toBe("M60,6 A54,54 0 0 1 60,114 A3.2,54 0 0 1 60,6 Z");
+  test("lit side on the right, crescent or gibbous", () => {
+    expect(moonDiscPath(0.53, 60, 60, 54)).toBe("M60,6 A54,54 0 0 1 60,114 A3.2,54 0 0 1 60,6 Z");
+    expect(moonDiscPath(0.2, 60, 60, 54)).toBe("M60,6 A54,54 0 0 1 60,114 A32.4,54 0 0 0 60,6 Z");
   });
-  test("other quadrants", () => {
-    expect(moonDiscPath(0.8, 120, 60, 60, 54, false)).toBe("M60,6 A54,54 0 0 1 60,114 A32.4,54 0 0 1 60,6 Z");
-    expect(moonDiscPath(0.2, 60, 60, 60, 54, false)).toBe("M60,6 A54,54 0 0 1 60,114 A32.4,54 0 0 0 60,6 Z");
-    expect(moonDiscPath(0.2, 300, 60, 60, 54, false)).toBe("M60,6 A54,54 0 0 0 60,114 A32.4,54 0 0 1 60,6 Z");
+  test("rotation turns the lit side to where it faces in the sky", () => {
+    expect(moonDiscRotation(270)).toBe(0); // lit on the right
+    expect(moonDiscRotation(90)).toBe(180); // lit on the left
+    expect(moonDiscRotation(180)).toBe(90); // lit at the bottom
+    expect(moonDiscRotation(0)).toBe(270); // lit at the top
   });
 });
 

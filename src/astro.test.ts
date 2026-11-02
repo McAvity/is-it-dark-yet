@@ -1,11 +1,12 @@
 // Reference values for Poznań, 2026-11-01 15:25 CET, checked against an independent sun and moon app.
 import { describe, expect, test } from "bun:test";
-import { dayEvents, moonInfo, phaseName, seasons, sunInfo, sunUpIntervals, type Place } from "./astro.ts";
+import { dayEvents, moonInfo, moonLitAngle, phaseName, position, seasons, sunInfo, sunUpIntervals, type Place } from "./astro.ts";
+import { angleDiff, norm360, toRad } from "./angles.ts";
 import { Body, Observer, SearchAltitude } from "./vendor/astronomy.ts";
 import { formatDate, formatTime } from "./format.ts";
 import { zonedDayEnd, zonedDayStart } from "./time.ts";
 import { lightSegments } from "./geometry.ts";
-import { LISBON, NORTH_POLE as POLE, POZNAN, TROMSO } from "./test-fixtures.ts";
+import { LISBON, NORTH_POLE as POLE, POZNAN, SYDNEY, TROMSO, place } from "./test-fixtures.ts";
 
 const NOW = new Date("2026-11-01T15:25:00+01:00");
 
@@ -288,5 +289,31 @@ describe("day events", () => {
     const day = new Date("2026-06-21T11:00:00Z");
     const ev = dayEvents(day, TROMSO, sunInfo(day, TROMSO), moonInfo(day, TROMSO)).filter((e) => e.body === "sun");
     expect(ev.map((e) => e.kind)).toEqual(["up"]);
+  });
+});
+
+describe("moonLitAngle", () => {
+  // Direction to the sun as seen when facing the moon (right = increasing azimuth), counter-clockwise from up.
+  const sunSide = (t: Date, p: Place) => {
+    const m = position(Body.Moon, t, p);
+    const s = position(Body.Sun, t, p);
+    const dx = angleDiff(s.azimuth, m.azimuth) * Math.cos(toRad(m.altitude));
+    return norm360((Math.atan2(-dx, s.altitude - m.altitude) * 180) / Math.PI);
+  };
+  const cases: [string, Place, string][] = [
+    ["Warsaw, waxing crescent in the evening: lit lower right", place("Warszawa", 52.23, 21.01, "Europe/Warsaw"), "2026-11-12T15:45:00Z"],
+    ["Warsaw, waning crescent in the morning: lit lower left", place("Warszawa", 52.23, 21.01, "Europe/Warsaw"), "2026-11-06T05:30:00Z"],
+    ["Sydney, waxing crescent in the evening: lit at the bottom", SYDNEY, "2026-11-12T09:00:00Z"],
+    ["Quito, waxing crescent in the evening", place("Quito", -0.18, -78.47, "America/Guayaquil"), "2026-11-12T23:45:00Z"],
+  ];
+  for (const [name, p, iso] of cases) {
+    test(name, () => {
+      const t = new Date(iso);
+      expect(Math.abs(angleDiff(moonLitAngle(t, p), sunSide(t, p)))).toBeLessThan(6);
+    });
+  }
+  test("lower right in Warsaw, bottom in Sydney", () => {
+    expect(moonLitAngle(new Date("2026-11-12T15:45:00Z"), place("Warszawa", 52.23, 21.01, "Europe/Warsaw"))).toBeWithin(240, 270);
+    expect(moonLitAngle(new Date("2026-11-12T09:00:00Z"), SYDNEY)).toBeWithin(150, 210);
   });
 });

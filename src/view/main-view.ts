@@ -6,7 +6,7 @@ import {
 } from "../format.ts";
 import { sunDirectionWindows } from "../direction.ts";
 import { messages, placeName, type Lang } from "../i18n.ts";
-import { moonDiscPath } from "../geometry.ts";
+import { moonDiscPath, moonDiscRotation } from "../geometry.ts";
 import { LOCATION_HASH, TOLERANCES, type AppState, type Direction } from "../state.ts";
 import { STEPS, zonedParts, type Step } from "../time.ts";
 import { COLORS, LIGHT_COLORS } from "./colors.ts";
@@ -175,7 +175,7 @@ ${where(main.moon, moon.position.altitude, moon.position.azimuth)}
 <div class="moon">
 <svg width="104" height="104" viewBox="0 0 120 120" role="img" aria-label="${main.moonAria(waning, pctText)}">
 <circle cx="60" cy="60" r="54" fill="${COLORS.moonDark}"/>
-<path d="${moonDiscPath(moon.illumination, moon.phaseAngle, 60, 60, 54, south)}" fill="${COLORS.moonLit}"/>
+<path d="${moonDiscPath(moon.illumination, 60, 60, 54)}" transform="rotate(${moonDiscRotation(moon.litAngle)} 60 60)" fill="${COLORS.moonLit}"/>
 </svg>
 <div><div class="phase">${phase}</div><div class="v">${main.illumination(pctText)}</div><div class="v k">${main.age(formatAge(moon.ageMs, lang))}</div></div>
 </div>

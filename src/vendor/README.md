@@ -2,3 +2,5 @@
 // License: MIT (Copyright (c) 2019-2025 Don Cross), kept in the file header as the license requires.
 // Our change: non-null assertions (`!`) on array and table reads, so the file passes our type check
 // (strict, noUncheckedIndexedAccess); no change in behaviour. Re-apply them when updating the file.
+// Added: ParallacticAngle and BrightLimbAngle (after HourAngle), ported from the upstream pull request
+// https://github.com/cosinekitty/astronomy/pull/332 (C). Re-add them when updating the file.

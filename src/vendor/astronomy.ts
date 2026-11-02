@@ -6065,6 +6065,82 @@ export function HourAngle(body: Body, date: FlexibleDateTime, observer: Observer
     return hourAngle;
 }
 
+/**
+ * @brief Calculates the parallactic angle of a body.
+ *
+ * Added to our copy from the upstream pull request
+ * https://github.com/cosinekitty/astronomy/pull/332 (C version by sbooth), ported to TypeScript.
+ *
+ * The parallactic angle `q` is the angle at the body between the direction to the
+ * observer's zenith and the direction to the north celestial pole (Meeus, equation 14.1).
+ * It is positive when the body is west of the meridian.
+ *
+ * @param {Body} body
+ *      The body being observed. Not allowed to be `Body.Earth`.
+ *
+ * @param {FlexibleDateTime} date
+ *      The date and time of the observation.
+ *
+ * @param {Observer} observer
+ *      The geographic location where the observation takes place.
+ *
+ * @param {boolean} aberration
+ *      Whether to correct for aberration (default true).
+ *
+ * @returns {number}
+ *      The parallactic angle in degrees, in the range (-180, +180].
+ */
+export function ParallacticAngle(body: Body, date: FlexibleDateTime, observer: Observer, aberration: boolean = true): number {
+    const time = MakeTime(date);
+    const ofdate = Equator(body, time, observer, true, aberration);
+    const H = HourAngle(body, time, observer) * HOUR2RAD;
+    const phi = observer.latitude * DEG2RAD;
+    const delta = ofdate.dec * DEG2RAD;
+    return RAD2DEG * Math.atan2(Math.sin(H), Math.tan(phi) * Math.cos(delta) - Math.sin(delta) * Math.cos(H));
+}
+
+
+/**
+ * @brief Calculates the position angle of a body's bright limb.
+ *
+ * Added to our copy from the upstream pull request
+ * https://github.com/cosinekitty/astronomy/pull/332 (C version by sbooth), ported to TypeScript.
+ *
+ * The angle `chi` is the position angle of the midpoint of the illuminated limb,
+ * reckoned eastward from the north point of the disc (Meeus, equation 48.5).
+ * The cusps are at `chi` ± 90 degrees. Subtracting the parallactic angle gives the same
+ * direction measured from the observer's zenith instead of from celestial north.
+ *
+ * @param {Body} body
+ *      The body being observed. Not allowed to be `Body.Earth`.
+ *
+ * @param {FlexibleDateTime} date
+ *      The date and time of the observation.
+ *
+ * @param {Observer} observer
+ *      The geographic location where the observation takes place.
+ *
+ * @param {boolean} aberration
+ *      Whether to correct for aberration (default true).
+ *
+ * @returns {number}
+ *      The position angle in degrees, in the range [0, 360).
+ */
+export function BrightLimbAngle(body: Body, date: FlexibleDateTime, observer: Observer, aberration: boolean = true): number {
+    const time = MakeTime(date);
+    const b = Equator(body, time, observer, true, aberration);
+    const sun = Equator(Body.Sun, time, observer, true, aberration);
+    const delta = b.dec * DEG2RAD;
+    const alpha = b.ra * HOUR2RAD;
+    const delta0 = sun.dec * DEG2RAD;
+    const alpha0 = sun.ra * HOUR2RAD;
+    const chi = RAD2DEG * Math.atan2(
+        Math.cos(delta0) * Math.sin(alpha0 - alpha),
+        Math.sin(delta0) * Math.cos(delta) - Math.cos(delta0) * Math.sin(delta) * Math.cos(alpha0 - alpha)
+    );
+    return chi < 0 ? chi + 360 : chi;
+}
+
 
 /**
  * @brief When the seasons change for a given calendar year.

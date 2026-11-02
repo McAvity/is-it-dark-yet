@@ -1,6 +1,8 @@
 // Calculation layer: turns Astronomy Engine output into the data the UI shows.
 // Times are Date objects; "day" means the calendar day in the place's IANA time zone.
 import {
+  BrightLimbAngle,
+  ParallacticAngle,
   Body,
   Equator,
   Horizon,
@@ -70,6 +72,7 @@ export interface MoonInfo extends RiseSet {
   phaseAngle: number; // 0 new, 90 first quarter, 180 full, 270 last quarter
   phaseName: MoonPhaseName;
   illumination: number; // fraction of disc lit, 0..1
+  litAngle: number; // where the lit side faces in the observer's sky: degrees counter-clockwise from the zenith, 0..360 (270 = lit on the right)
   upAtDayStart: boolean; // moon above the horizon at the start of the local day
   ageMs: number; // time since previous new moon
   nextQuarters: QuarterEvent[]; // next four
@@ -338,6 +341,13 @@ export function phaseName(angle: number): MoonPhaseName {
   return "waningCrescent";
 }
 
+// The bright limb's position angle (from celestial north) minus the parallactic angle gives
+// the same direction from the observer's zenith, so the crescent tilts as it does in the sky.
+export function moonLitAngle(t: Date, place: Place): number {
+  const obs = observer(place);
+  return norm360(BrightLimbAngle(Body.Moon, t, obs) - ParallacticAngle(Body.Moon, t, obs));
+}
+
 export function moonInfo(t: Date, place: Place): MoonInfo {
   const angle = MoonPhase(t);
   const prevNew = SearchMoonPhase(0, t, -35);
@@ -359,6 +369,7 @@ export function moonInfo(t: Date, place: Place): MoonInfo {
     phaseAngle: angle,
     phaseName: phaseName(angle),
     illumination: Illumination(Body.Moon, t).phase_fraction,
+    litAngle: moonLitAngle(t, place),
     ageMs: prevNew ? t.getTime() - prevNew.date.getTime() : NaN,
     nextQuarters: quarters,
   };
